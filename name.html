@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Birthday Card</title>
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+            font-family: Arial, sans-serif;
+            color: white;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 60%);
+            pointer-events: none;
+        }
+        
+        .card {
+            text-align: center;
+            padding: 2.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            width: 90%;
+            max-width: 400px;
+            position: relative;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 0 0 1px rgba(255, 255, 255, 0.1), inset 0 0 40px rgba(255, 255, 255, 0.05);
+            animation: cardGlow 3s infinite alternate;
+        }
+        
+        @keyframes cardGlow {
+            0% {
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 0 0 1px rgba(255, 255, 255, 0.1), inset 0 0 40px rgba(255, 255, 255, 0.05), 0 0 20px rgba(255, 64, 129, 0.1);
+            }
+            100% {
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 0 0 1px rgba(255, 255, 255, 0.1), inset 0 0 40px rgba(255, 255, 255, 0.05), 0 0 40px rgba(255, 64, 129, 0.2);
+            }
+        }
+        
+        .preview-image,
+        .person-image {
+            width: 200px;
+            height: 200px;
+            border-radius: 15px;
+            margin: 20px auto;
+            object-fit: cover;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3), 0 0 0 2px rgba(255, 255, 255, 0.1), 0 0 0 10px rgba(255, 255, 255, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .preview-image:hover,
+        .person-image:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4), 0 0 0 2px rgba(255, 255, 255, 0.2), 0 0 0 10px rgba(255, 255, 255, 0.08);
+        }
+        
+        .image-upload label {
+            padding: 12px 25px;
+            background: linear-gradient(145deg, #4CAF50, #45a049);
+            color: white;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2), inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+        
+        .image-upload label:hover {
+            transform: translateY(-2px);
+            background: linear-gradient(145deg, #55c559, #4ab44e);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3), inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+        }
+        
+        .name-input {
+            margin: 20px 0;
+            padding: 12px;
+            font-size: 1.2em;
+            border-radius: 25px;
+            border: none;
+            width: 80%;
+            max-width: 300px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1), inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .name-input:focus {
+            outline: none;
+            box-shadow: 0 4px 20px rgba(255, 64, 129, 0.2), inset 0 0 0 1px rgba(255, 64, 129, 0.3);
+            transform: translateY(-1px);
+        }
+        
+        .submit-btn {
+            padding: 12px 30px;
+            font-size: 1.2em;
+            background: linear-gradient(145deg, #ff4081, #e63975);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2), inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            background: linear-gradient(145deg, #ff5491, #f74b87);
+            box-shadow: 0 6px 20px rgba(255, 64, 129, 0.3), inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+        }
+        
+        .message {
+            font-size: 1.8em;
+            margin: 20px 0;
+            opacity: 0;
+            transition: all 1s ease;
+            padding: 0 10px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(90deg, #ff4081, #ff6b9f);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: messageGlow 2s infinite alternate;
+        }
+        
+        @keyframes messageGlow {
+            from {
+                filter: drop-shadow(0 0 2px rgba(255, 64, 129, 0.3));
+            }
+            to {
+                filter: drop-shadow(0 0 10px rgba(255, 64, 129, 0.5));
+            }
+        }
+        
+        .firework {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            filter: blur(1px);
+            box-shadow: 0 0 10px currentColor;
+            animation: fireworkGlow 1s ease-out;
+        }
+        
+        @keyframes fireworkGlow {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1.5);
+                opacity: 0;
+            }
+        }
+        /* Responsive adjustments */
+        
+        @media (max-width: 480px) {
+            .card {
+                padding: 1rem;
+            }
+            .message {
+                font-size: 1.4em;
+            }
+            .preview-image,
+            .person-image {
+                width: 150px;
+                height: 150px;
+            }
+            .name-input {
+                font-size: 1em;
+                padding: 10px;
+            }
+            .submit-btn {
+                padding: 10px 20px;
+                font-size: 1em;
+            }
+            .gift-box {
+                width: 60px;
+                height: 60px;
+            }
+        }
+        
+        .gift-box {
+            width: 80px;
+            height: 80px;
+            margin: 20px auto;
+            animation: rotate 3s infinite linear;
+        }
+        
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        
+        .image-upload input[type="file"] {
+            display: none;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+        .share-btn,
+        .edit-btn {
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            color: white;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+        
+        .share-btn {
+            background: linear-gradient(145deg, #4267B2, #385899);
+            box-shadow: 0 4px 15px rgba(66, 103, 178, 0.2);
+        }
+        
+        .edit-btn {
+            background: linear-gradient(145deg, #28a745, #218838);
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.2);
+        }
+        
+        .share-btn:hover,
+        .edit-btn:hover {
+            transform: translateY(-2px);
+        }
+    </style>
+    <!-- Update Supabase SDK import -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+</head>
+
+<body>
+    <div class="card">
+        <div id="input-section">
+            <img src="https://cdn-icons-png.flaticon.com/512/4213/4213958.png" class="gift-box" alt="Gift Box">
+            <div class="image-upload">
+                <label for="image-input">Choose Your Photo</label>
+                <input type="file" id="image-input" accept="image/*" onchange="previewImage(event)">
+                <img id="preview" class="preview-image" alt="Preview">
+            </div>
+            <input type="text" class="name-input" placeholder="Enter your name">
+            <button class="submit-btn" onclick="startCelebration()">Celebrate!</button>
+        </div>
+        <div id="message" class="message"></div>
+        <img id="person-image" class="person-image" alt="Birthday Person">
+        <div class="action-buttons" style="display: none;">
+            <button class="share-btn" onclick="shareCard()">Share Card</button>
+            <button class="edit-btn" onclick="editCard()">Edit Card</button>
+        </div>
+    </div>
+
+    <script>
+        // Fix Supabase configuration
+        const supabaseUrl = 'https://yeeumvbljvtbzdlllppg.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InllZXVtdmJsanZ0YnpkbGxscHBnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzg2OTA2MDEsImV4cCI6MjA1NDI2NjYwMX0.pjh-u84AxQmGpBavTRfLSaOHpaFig5PVvKy9niWmfuE';
+        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+        // Add error handling to check connection
+        async function checkConnection() {
+            try {
+                const {
+                    data,
+                    error
+                } = await supabase.from('birthday_cards').select('count');
+                if (error) throw error;
+                console.log('Successfully connected to Supabase');
+            } catch (error) {
+                console.error('Error connecting to Supabase:', error);
+            }
+        }
+
+        // Check connection when page loads
+        checkConnection();
+
+        // Birthday messages array
+        const birthdayMessages = [
+            "Wishing you a day filled with happiness and a year filled with joy! 🎉",
+            "May all your dreams and wishes come true! 🌟",
+            "Here's to another year of amazing adventures! 🎈",
+            "Sending you smiles for every moment of your special day! 😊",
+            "Hope your day is filled with all the things you love! 🎁",
+            "May your birthday be as special as you are! 💝",
+            "Wishing you the happiest of birthdays! 🎊",
+            "Here's to making more memories in the year ahead! 📸",
+            "May your day be filled with sweet moments! 🍰",
+            "Celebrating you today and always! 🎯",
+            "Hoping your birthday is as wonderful as you! 🌈",
+            "May this year bring you endless joy! ✨",
+            "Here's to another year of laughter and love! 💫",
+            "Wishing you a fantastic birthday celebration! 🎪",
+            "May all your birthday wishes come true! 🎭",
+            "Sending birthday love your way! 💖",
+            "Hope your special day brings you all that your heart desires! 🎀",
+            "Here's to celebrating you! 🥳",
+            "Wishing you a day that's as lovely as you! 🌺",
+            "May your birthday sparkle with joy and laughter! ⭐",
+            "Here's to another amazing year around the sun! 🌞",
+            "Celebrating the wonderful person you are! 🎗",
+            "Wishing you endless reasons to smile today! 😄",
+            "May your day be filled with beautiful surprises! 🎁",
+            "Here's to making your birthday as special as you make others feel! 💫"
+        ];
+
+        let cardId = null;
+
+        // Update the startCelebration function with better error handling
+        async function startCelebration() {
+            const name = document.querySelector('.name-input').value;
+            if (!name) {
+                alert('Please enter your name');
+                return;
+            }
+
+            const imageFile = document.querySelector('#image-input').files[0];
+            const randomMessage = birthdayMessages[Math.floor(Math.random() * birthdayMessages.length)];
+
+            try {
+                // Show loading state
+                document.querySelector('.submit-btn').disabled = true;
+                document.querySelector('.submit-btn').textContent = 'Creating...';
+
+                // Upload image to Supabase Storage
+                let imageUrl = 'https://cdn-icons-png.flaticon.com/512/4140/4140048.png'; // Default image
+                if (imageFile) {
+                    const fileName = `${Date.now()}-${imageFile.name}`;
+                    const {
+                        data,
+                        error
+                    } = await supabase.storage
+                        .from('birthday-images')
+                        .upload(fileName, imageFile);
+
+                    if (error) {
+                        throw new Error(`Error uploading image: ${error.message}`);
+                    }
+
+                    // Get public URL for the uploaded image
+                    const {
+                        data: {
+                            publicUrl
+                        }
+                    } = supabase.storage
+                        .from('birthday-images')
+                        .getPublicUrl(fileName);
+
+                    imageUrl = publicUrl;
+                }
+
+                // Save card data to Supabase database
+                const {
+                    data,
+                    error
+                } = await supabase
+                    .from('birthday_cards')
+                    .insert([{
+                        name: name,
+                        image_url: imageUrl,
+                        message: randomMessage,
+                        created_at: new Date().toISOString()
+                    }])
+                    .select();
+
+                if (error) {
+                    throw new Error(`Error saving card data: ${error.message}`);
+                }
+
+                cardId = data[0].id;
+
+                // Show celebration
+                document.getElementById('input-section').style.display = 'none';
+                const messageEl = document.getElementById('message');
+                messageEl.style.opacity = '1';
+                messageEl.textContent = `Happy Birthday, ${name}! 🎉`;
+
+                createFireworks();
+
+                // Change message and show image with animation after 5 seconds
+                setTimeout(() => {
+                    messageEl.textContent = randomMessage;
+                    const personImage = document.getElementById('person-image');
+                    personImage.src = imageUrl;
+                    personImage.style.display = 'block';
+                    document.querySelector('.action-buttons').style.display = 'flex';
+                }, 5000);
+
+            } catch (error) {
+                console.error("Error creating card:", error);
+                alert(`Error creating card: ${error.message}`);
+            } finally {
+                // Reset button state
+                document.querySelector('.submit-btn').disabled = false;
+                document.querySelector('.submit-btn').textContent = 'Celebrate!';
+            }
+        }
+
+        function shareCard() {
+            if (cardId) {
+                const shareUrl = `${window.location.origin}/card/${cardId}`;
+                // You can implement various sharing options here
+                if (navigator.share) {
+                    navigator.share({
+                        title: 'Birthday Card',
+                        text: 'Check out this birthday card!',
+                        url: shareUrl
+                    });
+                } else {
+                    // Fallback - copy to clipboard
+                    navigator.clipboard.writeText(shareUrl);
+                    alert('Link copied to clipboard!');
+                }
+            }
+        }
+
+        function editCard() {
+            if (cardId) {
+                document.getElementById('input-section').style.display = 'block';
+                document.getElementById('message').style.opacity = '0';
+                document.getElementById('person-image').style.display = 'none';
+                document.querySelector('.action-buttons').style.display = 'none';
+            }
+        }
+
+        function previewImage(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = document.getElementById('preview');
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function createFireworks() {
+            setInterval(() => {
+                const firework = document.createElement('div');
+                firework.className = 'firework';
+
+                // Random position
+                const x = Math.random() * window.innerWidth;
+                const y = Math.random() * window.innerHeight;
+
+                // Random color
+                const colors = ['#ff0', '#f0f', '#0ff', '#f00', '#0f0'];
+                const color = colors[Math.floor(Math.random() * colors.length)];
+
+                firework.style.left = x + 'px';
+                firework.style.top = y + 'px';
+                firework.style.backgroundColor = color;
+
+                document.body.appendChild(firework);
+
+                // Animate firework
+                const angle = Math.random() * Math.PI * 2;
+                const velocity = 5 + Math.random() * 5;
+                let opacity = 1;
+
+                const animate = () => {
+                    opacity -= 0.02;
+                    firework.style.opacity = opacity;
+
+                    if (opacity <= 0) {
+                        firework.remove();
+                        return;
+                    }
+
+                    requestAnimationFrame(animate);
+                };
+
+                animate();
+            }, 300);
+        }
+    </script>
+</body>
+
+</html>
